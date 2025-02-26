@@ -1,25 +1,20 @@
 import {useEffect, useState} from "react";
 import axios from "../configs/axios.js";
 
-const Actors = () => {
-    const [actors, setActors] = useState([]);
+const Actors = ({actors}) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const getActors = async () => {
-            try {
-                const response = await axios.get("/actors");
-                setActors(response.data);
-                setLoading(false);
-            }catch(err) {
-                setError(err);
-                setLoading(false);
-            }
-        }
 
-        getActors();
-    }, []);
+    useEffect(() => {
+        if (actors && actors.length !== 0) {
+            setLoading(false); // Stop loading when actors are available
+        } else if (error) {
+            setError(error); // Show error message if there is an error
+        } else {
+            setLoading(true); // Set loading to true if actors are not available
+        }
+    }, [actors]); // This will run when the `actors` prop changes
 
     if (loading) {
         return <div className="w-full h-full flex gap-3 justify-center items-center">
@@ -36,13 +31,13 @@ const Actors = () => {
         <div className={"w-full mx-auto flex flex-col items-center justify-center gap-4"}>
             {
                 actors.map((actor, index) => (
-                    <div className="w-[70%] grid grid-cols-1 md:grid-cols-2 gap-8 p-6 mx-auto bg-slate-600 rounded-lg shadow-lg" key={index}>
+                    <div className="w-[60%] grid grid-cols-1 md:grid-cols-2 gap-8 p-6 mx-auto bg-slate-600 rounded-lg shadow-lg" key={index}>
                         {/* Left Column - Photo */}
                         <div className="flex justify-center items-center">
                             <img
                                 src={actor.photo}
                                 alt={actor.name}
-                                className="rounded-lg shadow-lg max-w-6xl object-cover"
+                                className={"w-64 rounded-lg shadow-lg"}
                             />
                         </div>
 
